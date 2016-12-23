@@ -8,6 +8,7 @@
 #include <string>
 #include "Detector.h"
 #include "DefaultDetector.h"
+#include "TestDetector.h"
 
 using namespace std;
 
@@ -70,6 +71,9 @@ struct Config {
 	Detector* getDetector(){
 		if (detector == "DEFAULT_DETECTOR")
 			return new DefaultDetector;
+		
+		if (detector == "TEST_DETECTOR")
+			return new TestDetector;
 		
 		return new DefaultDetector;
 	}

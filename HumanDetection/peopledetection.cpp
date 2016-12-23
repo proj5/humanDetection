@@ -12,11 +12,12 @@ double getTime(clock_t start, clock_t end) {
 	return double(end - start) / CLOCKS_PER_SEC;
 }
 
-
+//createsamples -vec samples.vec -w 30 -h 73
 int main(int argc, const char * argv[]) {
 	VideoCapture cap;
 	//cap.open("C:\\Users\\XuanDuc\\Desktop\\VIDEO0042.mp4");
 	cap.open(conf.getVideo());	
+	cout << conf.getVideo() << endl;
 	cout << cap.get(CV_CAP_PROP_FPS) << endl;
 	cap.set(CV_CAP_PROP_FRAME_WIDTH , conf.getWidth());
 	cap.set(CV_CAP_PROP_FRAME_HEIGHT , conf.getHeight());
