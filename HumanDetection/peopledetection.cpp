@@ -24,11 +24,13 @@ int main(int argc, const char * argv[]) {
 	if (!cap.isOpened())
 		return -1;
 
-	Mat img;
+	Mat img, preImg;
 	Detector* detector = conf.getDetector();
+	Tracker* tracker = conf.getTracker();
 
-	namedWindow("video capture", CV_WINDOW_AUTOSIZE);
-	while (true) {
+	namedWindow("video capture", CV_WINDOW_AUTOSIZE);	
+	vector<Rect> found_filtered;
+	for(int step = 0; true; step++) {
 		clock_t start = clock();
 		bool ok = cap.read(img);
 		if (!ok)
@@ -39,7 +41,11 @@ int main(int argc, const char * argv[]) {
 		if (!img.data)
 			continue;
 
-		vector<Rect> found_filtered = detector->detect(img);
+		if (step%conf.getStep() == 0)
+			found_filtered = detector->detect(img);
+		else
+			found_filtered = tracker->detect(preImg, img, found_filtered);
+		
 		
 		for (size_t i = 0; i < found_filtered.size(); i++) {			
 			Rect r = found_filtered[i];
@@ -57,7 +63,7 @@ int main(int argc, const char * argv[]) {
 		if (waitKey(20) >= 0)
 			break;
 
-
+		preImg = img;		
 	}
 	delete detector;
 	return 0;

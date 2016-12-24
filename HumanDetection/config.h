@@ -6,9 +6,13 @@
 #include <sstream>
 #include <cstdlib>
 #include <string>
+
 #include "Detector.h"
 #include "DefaultDetector.h"
 #include "TestDetector.h"
+
+#include "Tracker.h"
+#include "DefaultTracker.h"
 
 using namespace std;
 
@@ -17,12 +21,16 @@ struct Config {
 	static const string WIDTH;
 	static const string HEIGHT;
 	static const string DETECTOR;
+	static const string TRACKER;
+	static const string STEP;
 		
 	map<string, string> config;
 	int width = 640;
 	int height = 480;
-	string video = "0";
+	int step = 10;
+	string video = "0";	
 	string detector = "DEFAULT_DETECTOR";
+	string tracker = "DEFAULT_TRACKER";
 	
 	bool checkConfig(string key){
 		return config.find(key) != config.end();
@@ -52,6 +60,12 @@ struct Config {
 		if (checkConfig(DETECTOR))
 			detector = config[DETECTOR];
 		
+		if (checkConfig(TRACKER))
+			tracker = config[TRACKER];
+		
+		if (checkConfig(STEP))
+			step = atoi(config[STEP].c_str());
+		
 		
 		//cout << video << " " << width << " " << height << endl;
 	}
@@ -62,6 +76,10 @@ struct Config {
 	
 	int getHeight(){
 		return height;		
+	}
+	
+	int getStep(){
+		return step;
 	}
 	
 	string getVideo(){
@@ -78,11 +96,20 @@ struct Config {
 		return new DefaultDetector;
 	}
 	
+	Tracker* getTracker(){
+		if (tracker == "DEFAULT_TRACKER")
+			return new DefaultTracker;
+			
+		return new DefaultTracker;
+	}
+	
 };
 
 const string Config::VIDEO = "VIDEO";
 const string Config::WIDTH = "WIDTH";
 const string Config::HEIGHT = "HEIGHT";
 const string Config::DETECTOR = "DETECTOR";
+const string Config::TRACKER = "TRACKER";
+const string Config::STEP = "STEP";
 
 #endif
