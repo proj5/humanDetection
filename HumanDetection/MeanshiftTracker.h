@@ -17,6 +17,16 @@ class MeanshiftTracker : public Tracker {
 				box.width = img.cols - box.x;
 			if (box.y + box.height > img.rows)
 				box.height = img.rows - box.y;
+			
+			if (box.x < 0){
+				box.width += box.x;
+				box.x = 0;
+			}
+			
+			if (box.y < 0){
+				box.height += box.y;
+				box.y = 0;
+			}
 		}
 		
 		void run(const Mat& preImg, const Mat& img, Rect& selection){
