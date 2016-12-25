@@ -24,11 +24,13 @@ struct Config {
 	static const string DETECTOR;
 	static const string TRACKER;
 	static const string STEP;
+	static const string FPS;
 		
 	map<string, string> config;
 	int width = 640;
 	int height = 480;
 	int step = 10;
+	int fps = 25;
 	string video = "0";	
 	string detector = "DEFAULT_DETECTOR";
 	string tracker = "DEFAULT_TRACKER";
@@ -67,6 +69,9 @@ struct Config {
 		if (checkConfig(STEP))
 			step = atoi(config[STEP].c_str());
 		
+		if (checkConfig(FPS))
+			step = atoi(config[FPS].c_str());
+		
 		
 		//cout << video << " " << width << " " << height << endl;
 	}
@@ -81,6 +86,10 @@ struct Config {
 	
 	int getStep(){
 		return step;
+	}
+	
+	int getFps(){
+		return fps;
 	}
 	
 	string getVideo(){
@@ -115,5 +124,6 @@ const string Config::HEIGHT = "HEIGHT";
 const string Config::DETECTOR = "DETECTOR";
 const string Config::TRACKER = "TRACKER";
 const string Config::STEP = "STEP";
+const string Config::FPS = "FPS";
 
 #endif

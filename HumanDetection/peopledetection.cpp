@@ -1,6 +1,11 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
 #include <ctime>
+#include <thread>
+#include <mutex>
+#include <queue>
+#include <condition_variable>
+#include <chrono>
 #include "config.h"
 
 using namespace std;
@@ -8,36 +13,125 @@ using namespace cv;
 
 Config conf;
 
+template <typename T>
+class Queue
+{
+ public:
+ 
+  T pop()
+  {
+    std::unique_lock<std::mutex> mlock(mutex_);
+    while (queue_.empty())
+    {
+      cond_.wait(mlock);
+    }
+    auto item = queue_.front();
+    queue_.pop();
+    return item;
+  }
+  
+  int size(){
+	  return queue_.size();
+  }
+  
+  bool empty(){
+	  //cout << queue_.size() << endl;
+	  return queue_.empty();
+  }
+ 
+  void pop(T& item)
+  {
+    std::unique_lock<std::mutex> mlock(mutex_);
+    while (queue_.empty())
+    {
+      cond_.wait(mlock);
+    }
+    item = queue_.front();
+    queue_.pop();
+  }
+ 
+  void push(const T& item)
+  {
+    std::unique_lock<std::mutex> mlock(mutex_);
+    queue_.push(item);
+	//cout << "PUSH: " << queue_.size() << endl;
+    mlock.unlock();
+    cond_.notify_one();
+  }
+ 
+  void push(T&& item)
+  {
+    std::unique_lock<std::mutex> mlock(mutex_);
+    queue_.push(std::move(item));
+	//cout << "PUSH: " << queue_.size() << endl;
+    mlock.unlock();
+    cond_.notify_one();
+  }
+ 
+ private:
+  std::queue<T> queue_;
+  std::mutex mutex_;
+  std::condition_variable cond_;
+};
+
+Queue<Mat> q;
+const string name = "Test";
+bool stop = false;
+
 double getTime(clock_t start, clock_t end) {
 	return double(end - start) / CLOCKS_PER_SEC;
 }
 
-//createsamples -vec samples.vec -w 30 -h 73
-int main(int argc, const char * argv[]) {
+
+
+
+
+void show() {
+	int tt = 1000 / conf.getFps() + 1;
+	namedWindow(name);
+	while (!stop || !q.empty()){
+		Mat img = q.pop();
+		imshow(name, img);
+		//cout << tt << endl;
+		//this_thread::sleep_for(std::chrono::milliseconds(50));		
+		//cout << stop << " " << q.empty() << endl;
+		if (waitKey(tt) >= 0)
+			break;
+	}
+}
+
+void killThread(){
+	
+}
+
+void proc() {
 	VideoCapture cap;
 	//cap.open("C:\\Users\\XuanDuc\\Desktop\\VIDEO0042.mp4");
 	cap.open(conf.getVideo());	
-	cout << conf.getVideo() << endl;
-	cout << cap.get(CV_CAP_PROP_FPS) << endl;
+	//cout << conf.getVideo() << endl;
+	//cout << cap.get(CV_CAP_PROP_FPS) << endl;
 	cap.set(CV_CAP_PROP_FRAME_WIDTH , conf.getWidth());
 	cap.set(CV_CAP_PROP_FRAME_HEIGHT , conf.getHeight());
 	if (!cap.isOpened())
-		return -1;
+		return ;
 
 	Mat img, preImg;
 	Detector* detector = conf.getDetector();
 	Tracker* tracker = conf.getTracker();
 
-	namedWindow("video capture", CV_WINDOW_AUTOSIZE);	
 	vector<Rect> found_filtered;
 	for(int step = 0; true; step++) {
 		clock_t start = clock();
 		bool ok = cap.read(img);
-		if (!ok)
+		if (!ok) {
+			//cout << "STOP" << endl;
+			stop = true;
+			q.push(preImg);	
 			break;
+		}
 	
 		resize(img, img, Size(conf.getWidth(), conf.getHeight()), 0, 0, INTER_CUBIC);
-		cout << img.cols << " " << img.rows << endl;
+		//cout << img.cols << " " << img.rows << endl;
 		if (!img.data)
 			continue;
 
@@ -49,7 +143,7 @@ int main(int argc, const char * argv[]) {
 		
 		for (size_t i = 0; i < found_filtered.size(); i++) {			
 			Rect r = found_filtered[i];
-			cout << r.tl() << " " << r.br() << endl;
+			//cout << r.tl() << " " << r.br() << endl;
 			r.x += cvRound(r.width * 0.1);
 			r.width = cvRound(r.width * 0.8);
 			r.y += cvRound(r.height * 0.06);
@@ -57,14 +151,21 @@ int main(int argc, const char * argv[]) {
 			rectangle(img, r.tl(), r.br(), cv::Scalar(0, 255, 0), 2);
 		}
 		//resize(img, img, Size(cap.get(CV_CAP_PROP_FRAME_WIDTH), cap.get(CV_CAP_PROP_FRAME_HEIGHT)), 0, 0, INTER_CUBIC);
-		imshow("video capture", img);
+		//imshow("video capture", img);
+		q.push(img);
 		clock_t end = clock();
-		cout << getTime(start, end) << endl;
-		if (waitKey(20) >= 0)
-			break;
+		cout << getTime(start, end) << endl;		
 
 		preImg = img;		
 	}
-	delete detector;
-	return 0;
+	delete detector;	
+}
+
+//createsamples -vec samples.vec -w 30 -h 73
+int main(int argc, const char * argv[]) {
+	thread sh (show);
+	thread pr (proc);	
+		
+	sh.join();
+	pr.join();
 }
