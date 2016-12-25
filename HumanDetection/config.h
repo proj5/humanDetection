@@ -13,6 +13,7 @@
 
 #include "Tracker.h"
 #include "DefaultTracker.h"
+#include "MeanshiftTracker.h"
 
 using namespace std;
 
@@ -87,18 +88,21 @@ struct Config {
 	}
 	
 	Detector* getDetector(){
-		if (detector == "DEFAULT_DETECTOR")
+		if (detector == "DEFAULT")
 			return new DefaultDetector;
 		
-		if (detector == "TEST_DETECTOR")
+		if (detector == "TEST")
 			return new TestDetector;
 		
 		return new DefaultDetector;
 	}
 	
 	Tracker* getTracker(){
-		if (tracker == "DEFAULT_TRACKER")
+		if (tracker == "DEFAULT")
 			return new DefaultTracker;
+		
+		if (tracker == "MEANSHIFT")
+			return new MeanshiftTracker;
 			
 		return new DefaultTracker;
 	}
