@@ -88,7 +88,6 @@ double getTime(clock_t start, clock_t end) {
 
 void show() {
 	int tt = 1000 / conf.getFps() + 1;
-	namedWindow(name);
 	while (!stop || !q.empty()){
 		Mat img = q.pop();
 		imshow(name, img);
@@ -110,6 +109,7 @@ void proc() {
 	cap.open(conf.getVideo());	
 	//cout << conf.getVideo() << endl;
 	//cout << cap.get(CV_CAP_PROP_FPS) << endl;
+	//namedWindow("video capture");
 	cap.set(CV_CAP_PROP_FRAME_WIDTH , conf.getWidth());
 	cap.set(CV_CAP_PROP_FRAME_HEIGHT , conf.getHeight());
 	if (!cap.isOpened())
@@ -152,6 +152,7 @@ void proc() {
 		}
 		//resize(img, img, Size(cap.get(CV_CAP_PROP_FRAME_WIDTH), cap.get(CV_CAP_PROP_FRAME_HEIGHT)), 0, 0, INTER_CUBIC);
 		//imshow("video capture", img);
+		//if (waitKey(50) >= 0) break;
 		q.push(img);
 		clock_t end = clock();
 		cout << getTime(start, end) << endl;		
@@ -163,9 +164,11 @@ void proc() {
 
 //createsamples -vec samples.vec -w 30 -h 73
 int main(int argc, const char * argv[]) {
-	thread sh (show);
+	namedWindow(name);
+
 	thread pr (proc);	
-		
-	sh.join();
 	pr.join();
+
+	show();
+	//proc();
 }
