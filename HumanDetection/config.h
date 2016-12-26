@@ -70,7 +70,7 @@ struct Config {
 			step = atoi(config[STEP].c_str());
 		
 		if (checkConfig(FPS))
-			step = atoi(config[FPS].c_str());
+			fps = atoi(config[FPS].c_str());
 		
 		
 		//cout << video << " " << width << " " << height << endl;
