@@ -167,8 +167,8 @@ int main(int argc, const char * argv[]) {
 	namedWindow(name);
 
 	thread pr (proc);	
-	//pr.join();
-
 	show();
-	//proc();
+	
+	pr.join();
+	return 0;
 }
