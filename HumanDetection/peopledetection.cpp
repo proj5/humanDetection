@@ -130,7 +130,7 @@ void proc() {
 			break;
 		}
 	
-		//resize(img, img, Size(conf.getWidth(), conf.getHeight()), 0, 0, INTER_CUBIC);
+		resize(img, img, Size(conf.getWidth(), conf.getHeight()), 0, 0, INTER_CUBIC);
 		//cout << img.cols << " " << img.rows << endl;
 		if (!img.data)
 			continue;
@@ -143,7 +143,7 @@ void proc() {
 		
 		for (size_t i = 0; i < found_filtered.size(); i++) {			
 			Rect r = found_filtered[i];
-			//cout << r.tl() << " " << r.width << " " << r.height << endl;
+			cout << r.tl() << " " << r.width << " " << r.height << endl;
 			r.x += cvRound(r.width * 0.1);
 			r.width = cvRound(r.width * 0.8);
 			r.y += cvRound(r.height * 0.06);
