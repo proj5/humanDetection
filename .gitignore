@@ -3,3 +3,4 @@ Debug/*
 x64/*
 *.exe
 run
+.DS_Store
