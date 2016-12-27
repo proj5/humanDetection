@@ -1,7 +1,7 @@
 #ifndef _MC_DEFAULT_DETECTOR_H
 #define _MC_DEFAULT_DETECTOR_H 1
 
-#include "detector.h"
+#include "Detector.h"
 
 class DefaultDetector : public Detector {
 	private:
