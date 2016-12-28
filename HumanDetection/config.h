@@ -45,18 +45,7 @@ struct Config {
 		return config.find(key) != config.end();
 	}
 	
-		
-	Config(string name = "config.txt") {
-		ifstream fi(name);
-		string line;
-		while (getline(fi, line)){
-			stringstream ss(line);
-			string key, value;
-			getline(ss, key, '=');
-			getline(ss, value);
-			config[key] = value;
-		}
-		
+	void init(){
 		if (checkConfig(VIDEO))
 			video = config[VIDEO];
 		
@@ -77,11 +66,39 @@ struct Config {
 		
 		if (checkConfig(FPS))
 			fps = atoi(config[FPS].c_str());
-		
-		
+	}
+
+
+
+	Config(string name = "config.txt") {
+		ifstream fi(name);
+		string line;
+		while (getline(fi, line)){
+			stringstream ss(line);
+			string key, value;
+			getline(ss, key, '=');
+			getline(ss, value);
+			config[key] = value;
+		}
+		init();
 		//cout << video << " " << width << " " << height << endl;
 	}
-	
+
+	void parseArgument(string s){
+		s = s.substr(2);
+		for (auto & c: s) c = toupper(c);
+		stringstream ss(s);
+		string key, value;
+		getline(ss, key, '=');
+		getline(ss, value);
+		config[key] = value;
+	}
+
+	void debug(){
+		for(auto p: config)
+			cerr << p.first << " " << p.second << endl;
+	}
+
 	int getWidth(){
 		return width;		
 	}

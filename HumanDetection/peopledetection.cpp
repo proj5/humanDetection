@@ -1,3 +1,5 @@
+#include <cstring>
+#include <string>
 #include <iostream>
 #include <opencv2/opencv.hpp>
 #include <ctime>
@@ -165,8 +167,32 @@ void proc() {
 	delete detector;	
 }
 
+void help(){
+	string message = "Options:\n";
+	message += "--video=<video file name>\n";
+	message += "--width=<width of resized video>\n";
+	message += "--height=<height of resized video>\n";
+	message += "--detector=<detector>\n";
+	message += "--tracker=<tracker>\n";
+	message += "--output=<output file>\n";
+
+	cout << message;
+
+}
+
 //createsamples -vec samples.vec -w 30 -h 73
 int main(int argc, const char * argv[]) {
+	for(int i = 1; i < argc; ++i){
+		if (strcmp(argv[i], "--help") == 0){
+			help();
+			return 0;
+		}
+		else 
+			conf.parseArgument(argv[i]);
+	}
+
+	conf.init();
+	//conf.debug();
 	namedWindow(name);
 
 	thread pr (proc);	
