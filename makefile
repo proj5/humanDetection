@@ -1,7 +1,8 @@
 FILES = HumanDetection/peopledetection.cpp *.o
 
 ifeq ($(OS),Windows_NT)
-	LIB = -I D:/Development/Opencv/opencv/build/include/opencv -I D:/Development/Opencv/opencv/build/include/ -L D:\Development/opencv-2.4.13/build/lib -lopencv_core2413 -lopencv_highgui2413 -lopencv_imgproc2413 -lopencv_legacy2413 -lopencv_objdetect2413 -lopencv_video2413
+	# LIB = -I D:/Development/Opencv/opencv/build/include/opencv -I D:/Development/Opencv/opencv/build/include/ -L D:\Development/opencv-2.4.13/build/lib -lopencv_core2413 -lopencv_highgui2413 -lopencv_imgproc2413 -lopencv_legacy2413 -lopencv_objdetect2413 -lopencv_video2413
+	LIB = -I "F:/DaiHoc/2016-2017 ki 1/Multimedia Communication/opencv/build/include" -I "F:/DaiHoc/2016-2017 ki 1/Multimedia Communication/opencv/build/include/opencv" -L "F:/DaiHoc/2016-2017 ki 1/Multimedia Communication/Duc/my_build/lib" -llibopencv_core310 -llibopencv_highgui310 -llibopencv_imgproc310 -llibopencv_objdetect310 -llibopencv_video310 -llibopencv_videoio310 -llibopencv_features2d310
 else
 	LIB = `pkg-config --cflags --libs opencv`
 endif
@@ -19,7 +20,7 @@ else
 endif
 
 
-COMMAND = g++ $(FILES) -o run $(LIB)
+COMMAND = g++ -O3 -std=c++11 $(FILES) -o run $(LIB)
 
 
 all:
