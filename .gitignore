@@ -5,3 +5,6 @@ x64/*
 run
 .DS_Store
 Resources/*
+HumanDetection/x64/Debug/*
+x64/Debug/*
+*.o

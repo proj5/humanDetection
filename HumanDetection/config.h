@@ -10,6 +10,7 @@
 #include "Detector.h"
 #include "DefaultDetector.h"
 #include "TestDetector.h"
+#include "PartBasedDetector.h"
 
 #include "Tracker.h"
 #include "DefaultTracker.h"
@@ -103,6 +104,9 @@ struct Config {
 		if (detector == "TEST")
 			return new TestDetector;
 		
+		if (detector == "DPM")
+			return new PartBasedDetector("Models/inriaperson.xml");
+
 		return new DefaultDetector;
 	}
 	
