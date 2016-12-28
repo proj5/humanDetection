@@ -101,8 +101,7 @@ void show() {
 	}
 }
 
-void getVideoOutput(VideoCapture cap, VideoWriter& output){
-	cout << "abc";
+void getVideoOutput(VideoCapture cap, VideoWriter& output){	
 	Size S = Size(conf.getWidth(), conf.getHeight());
 	int ex = static_cast<int>(cap.get(CV_CAP_PROP_FOURCC));
 
