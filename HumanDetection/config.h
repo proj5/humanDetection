@@ -31,6 +31,7 @@ struct Config {
 	static const string TRACKER;
 	static const string STEP;
 	static const string FPS;
+	static const string OUTPUT;
 		
 	map<string, string> config;
 	int width = 640;
@@ -40,6 +41,7 @@ struct Config {
 	string video = "0";	
 	string detector = "DEFAULT_DETECTOR";
 	string tracker = "DEFAULT_TRACKER";
+	string output = "NONE";
 	
 	bool checkConfig(string key){
 		return config.find(key) != config.end();
@@ -66,6 +68,9 @@ struct Config {
 		
 		if (checkConfig(FPS))
 			fps = atoi(config[FPS].c_str());
+
+		if (checkConfig(OUTPUT))
+			output = config[OUTPUT];
 	}
 
 
@@ -119,6 +124,14 @@ struct Config {
 		return video;
 	}
 	
+	string getOutput(){
+		return output;
+	}
+	
+	bool isOutput(){
+		return output!="NONE";
+	}
+	
 	Detector* getDetector(){
 		if (detector == "DEFAULT")
 			return new DefaultDetector;
@@ -154,5 +167,6 @@ const string Config::DETECTOR = "DETECTOR";
 const string Config::TRACKER = "TRACKER";
 const string Config::STEP = "STEP";
 const string Config::FPS = "FPS";
+const string Config::OUTPUT = "OUTPUT";
 
 #endif

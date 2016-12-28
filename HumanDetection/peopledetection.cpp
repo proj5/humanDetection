@@ -101,6 +101,14 @@ void show() {
 	}
 }
 
+void getVideoOutput(VideoCapture cap, VideoWriter& output){
+	cout << "abc";
+	Size S = Size(conf.getWidth(), conf.getHeight());
+	int ex = static_cast<int>(cap.get(CV_CAP_PROP_FOURCC));
+
+    output.open(conf.getOutput(), ex, cap.get(CV_CAP_PROP_FPS), S, true);
+}
+
 void killThread(){
 	
 }
@@ -116,6 +124,10 @@ void proc() {
 	cap.set(CV_CAP_PROP_FRAME_HEIGHT , conf.getHeight());
 	if (!cap.isOpened())
 		return ;
+
+	VideoWriter output;
+	if (conf.isOutput())
+		getVideoOutput(cap, output);
 
 	Mat img, preImg;
 	Detector* detector = conf.getDetector();
@@ -158,6 +170,8 @@ void proc() {
 		//resize(img, img, Size(cap.get(CV_CAP_PROP_FRAME_WIDTH), cap.get(CV_CAP_PROP_FRAME_HEIGHT)), 0, 0, INTER_CUBIC);
 		//imshow("video capture", img);
 		//if (waitKey(50) >= 0) break;
+		if (output.isOpened())
+			output.write(img.clone());
 		q.push(img.clone());
 		clock_t end = clock();
 		cout << getTime(start, end) << endl;		
@@ -177,7 +191,6 @@ void help(){
 	message += "--output=<output file>\n";
 
 	cout << message;
-
 }
 
 //createsamples -vec samples.vec -w 30 -h 73
