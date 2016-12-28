@@ -1,6 +1,10 @@
 #ifndef _MC_CONFIG
 #define _MC_CONFIG 1
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 #include <map>
 #include <fstream>
 #include <sstream>
