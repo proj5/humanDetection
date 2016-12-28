@@ -1,4 +1,4 @@
-VIDEO=resources/demo4.mp4
+VIDEO=resources/daria_walk.avi
 WIDTH=360
 HEIGHT=240
 DETECTOR=DPM
