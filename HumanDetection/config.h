@@ -15,6 +15,7 @@
 #include "Tracker.h"
 #include "DefaultTracker.h"
 #include "MeanshiftTracker.h"
+#include "CmtTracker.h"
 
 using namespace std;
 
@@ -116,6 +117,9 @@ struct Config {
 		
 		if (tracker == "MEANSHIFT")
 			return new MeanshiftTracker;
+
+		if (tracker == "CMT")
+			return new CmtTracker;
 			
 		return new DefaultTracker;
 	}

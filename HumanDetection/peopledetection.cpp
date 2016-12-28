@@ -137,8 +137,11 @@ void proc() {
 
 		if (step%conf.getStep() == 0)
 			found_filtered = detector->detect(img);
-		else
+		else {
+			if (step%conf.getStep() == 1)
+				tracker->startDetect();
 			found_filtered = tracker->detect(preImg, img, found_filtered);
+		}
 		
 		
 		for (size_t i = 0; i < found_filtered.size(); i++) {			

@@ -7,9 +7,15 @@ else
 endif
 
 ifneq ("$(wildcard dpm_nms.o)","")
-	PRE_COMMAND = echo compile dpm
+	PRE_DPM = echo compile dpm
 else
-	PRE_COMMAND = g++ -c HumanDetection/DPM/*.cpp $(LIB)
+	PRE_DPM = g++ -c HumanDetection/DPM/*.cpp $(LIB)
+endif
+
+ifneq ("$(wildcard Fusion.o)","")
+	PRE_CMT = echo compile CppMT
+else
+	PRE_CMT = g++ -c HumanDetection/CppMT/*.cpp HumanDetection/CppMT/fastcluster/*.cpp -I HumanDetection/CppMT $(LIB)
 endif
 
 
@@ -17,5 +23,6 @@ COMMAND = g++ $(FILES) -o run $(LIB)
 
 
 all:
-	$(PRE_COMMAND)
+	$(PRE_DPM)
+	$(PRE_CMT)
 	$(COMMAND)

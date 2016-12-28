@@ -8,7 +8,11 @@ using namespace std;
 
 class Tracker {
 	public:		
-		Tracker() {}		
+		Tracker() {}
+		virtual void startDetect(){
+
+		}	
+			
 		virtual vector<Rect> detect(const Mat& pre, const Mat& now, vector<Rect> boxes)=0;
 		
 		virtual ~Tracker() {}
