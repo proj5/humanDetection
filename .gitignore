@@ -7,3 +7,4 @@ run
 Resources/*
 HumanDetection/x64/Debug/*
 x64/Debug/*
+*.o
