@@ -53,8 +53,10 @@ using namespace std;
 
 class CmtTracker : public Tracker{
 	private: 
-		CMT cmt;
-		Rect curBox;
+		//CMT cmt;
+		//Rect curBox;
+		vector<CMT> cmts;
+		vector<Rect> curBoxes;
 		Mat curIm; // Default is grayscale
 		bool reInit;
 	public:
@@ -79,35 +81,28 @@ class CmtTracker : public Tracker{
 				im_gray = im;
 			}
 			return im_gray;
-		}
-
-		void initBox(const Rect& _box) {
-			curBox = _box;
-		}
+		}		
 
 		void initImage(const Mat& im0) {
 			Mat im0_gray = imToGray(im0);
 		    curIm = im0_gray;
 		}
 
-		void initCmt() {
-			cmt.initialize(curIm, curBox);
+		void initCmt(CMT& cmt, const Rect& curBox) {
+			cmt.initialize(curIm, curBox);			
 		}
 
-		void init(const Rect& _box, const Mat& _im) {
-			CMT newCmt;
-			cmt = newCmt;
+		void init(const Rect& _box) {
+			CMT cmt;
+			cmts.push_back(cmt);
 			FILELog::ReportingLevel() = logINFO;
-			cmt.consensus.estimate_scale = false;
-			initBox(_box);
-			initImage(_im);
-			initCmt();
+			cmts.back().consensus.estimate_scale = false;			
+			initCmt(cmts.back(), _box);
 		}
 
-		Rect process(const Mat& im) {
-			Mat im_gray = imToGray(im);
+		Rect process(CMT& cmt, const Mat& im_gray) {			
 			cmt.processFrame(im_gray);
-			curBox = getRect(cmt);
+			Rect curBox = getRect(cmt);
 			return curBox;
 		}
 
@@ -115,11 +110,21 @@ class CmtTracker : public Tracker{
 			if (boxes.empty())
 				return boxes;
 			if (reInit) {
-				init(boxes[0], pre);
+				cmts.clear();
+				curBoxes.clear();
+				
+				initImage(pre);
+				for(const Rect& box: boxes)
+					init(box);
+				
 				reInit = false;
 			}
+			
+			Mat im_gray = imToGray(now);
 			vector<Rect> result;
-			result.push_back(process(now));
+			
+			for(int i = 0; i < (int)boxes.size(); ++i)
+				result.push_back(process(cmts[i], im_gray));
 			return result;
 		}
 	
