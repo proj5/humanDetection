@@ -1,0 +1,3 @@
+/Users/iamquang95/Documents/CppMT/CMakeFiles/rebuild_cache.dir
+/Users/iamquang95/Documents/CppMT/CMakeFiles/edit_cache.dir
+/Users/iamquang95/Documents/CppMT/CMakeFiles/cmt.dir
