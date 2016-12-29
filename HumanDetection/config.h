@@ -31,6 +31,7 @@ struct Config {
 	static const string TRACKER;
 	static const string STEP;
 	static const string FPS;
+	static const string OUTPUT;
 		
 	map<string, string> config;
 	int width = 640;
@@ -40,23 +41,13 @@ struct Config {
 	string video = "0";	
 	string detector = "DEFAULT_DETECTOR";
 	string tracker = "DEFAULT_TRACKER";
+	string output = "NONE";
 	
 	bool checkConfig(string key){
 		return config.find(key) != config.end();
 	}
 	
-		
-	Config(string name = "config.txt") {
-		ifstream fi(name);
-		string line;
-		while (getline(fi, line)){
-			stringstream ss(line);
-			string key, value;
-			getline(ss, key, '=');
-			getline(ss, value);
-			config[key] = value;
-		}
-		
+	void init(){
 		if (checkConfig(VIDEO))
 			video = config[VIDEO];
 		
@@ -77,11 +68,42 @@ struct Config {
 		
 		if (checkConfig(FPS))
 			fps = atoi(config[FPS].c_str());
-		
-		
+
+		if (checkConfig(OUTPUT))
+			output = config[OUTPUT];
+	}
+
+
+
+	Config(string name = "config.txt") {
+		ifstream fi(name);
+		string line;
+		while (getline(fi, line)){
+			stringstream ss(line);
+			string key, value;
+			getline(ss, key, '=');
+			getline(ss, value);
+			config[key] = value;
+		}
+		init();
 		//cout << video << " " << width << " " << height << endl;
 	}
-	
+
+	void parseArgument(string s){
+		s = s.substr(2);
+		for (auto & c: s) c = toupper(c);
+		stringstream ss(s);
+		string key, value;
+		getline(ss, key, '=');
+		getline(ss, value);
+		config[key] = value;
+	}
+
+	void debug(){
+		for(auto p: config)
+			cerr << p.first << " " << p.second << endl;
+	}
+
 	int getWidth(){
 		return width;		
 	}
@@ -100,6 +122,14 @@ struct Config {
 	
 	string getVideo(){
 		return video;
+	}
+	
+	string getOutput(){
+		return output;
+	}
+	
+	bool isOutput(){
+		return output!="NONE";
 	}
 	
 	Detector* getDetector(){
@@ -137,5 +167,6 @@ const string Config::DETECTOR = "DETECTOR";
 const string Config::TRACKER = "TRACKER";
 const string Config::STEP = "STEP";
 const string Config::FPS = "FPS";
+const string Config::OUTPUT = "OUTPUT";
 
 #endif

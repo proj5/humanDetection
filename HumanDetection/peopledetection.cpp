@@ -1,3 +1,5 @@
+#include <cstring>
+#include <string>
 #include <iostream>
 #include <opencv2/opencv.hpp>
 #include <ctime>
@@ -99,6 +101,13 @@ void show() {
 	}
 }
 
+void getVideoOutput(VideoCapture cap, VideoWriter& output){	
+	Size S = Size(conf.getWidth(), conf.getHeight());
+	int ex = static_cast<int>(cap.get(CV_CAP_PROP_FOURCC));
+
+    output.open(conf.getOutput(), ex, cap.get(CV_CAP_PROP_FPS), S, true);
+}
+
 void killThread(){
 	
 }
@@ -114,6 +123,10 @@ void proc() {
 	cap.set(CV_CAP_PROP_FRAME_HEIGHT , conf.getHeight());
 	if (!cap.isOpened())
 		return ;
+
+	VideoWriter output;
+	if (conf.isOutput())
+		getVideoOutput(cap, output);
 
 	Mat img, preImg;
 	Detector* detector = conf.getDetector();
@@ -156,6 +169,8 @@ void proc() {
 		//resize(img, img, Size(cap.get(CV_CAP_PROP_FRAME_WIDTH), cap.get(CV_CAP_PROP_FRAME_HEIGHT)), 0, 0, INTER_CUBIC);
 		//imshow("video capture", img);
 		//if (waitKey(50) >= 0) break;
+		if (output.isOpened())
+			output.write(img.clone());
 		q.push(img.clone());
 		clock_t end = clock();
 		cout << getTime(start, end) << endl;		
@@ -165,8 +180,31 @@ void proc() {
 	delete detector;	
 }
 
+void help(){
+	string message = "Options:\n";
+	message += "--video=<video file name>\n";
+	message += "--width=<width of resized video>\n";
+	message += "--height=<height of resized video>\n";
+	message += "--detector=<detector>\n";
+	message += "--tracker=<tracker>\n";
+	message += "--output=<output file>\n";
+
+	cout << message;
+}
+
 //createsamples -vec samples.vec -w 30 -h 73
 int main(int argc, const char * argv[]) {
+	for(int i = 1; i < argc; ++i){
+		if (strcmp(argv[i], "--help") == 0){
+			help();
+			return 0;
+		}
+		else 
+			conf.parseArgument(argv[i]);
+	}
+
+	conf.init();
+	//conf.debug();
 	namedWindow(name);
 
 	thread pr (proc);	
