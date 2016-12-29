@@ -12,12 +12,20 @@ class Detector {
 		virtual void nonmaxSuppression(vector<Rect>& rec){
 			size_t i, j;
 			vector<Rect> result;
+			//cout << "Enter";
 			for (i = 0; i < rec.size(); i++) {
 				Rect r = rec[i];
-				for (j = 0; j < rec.size(); j++)
-					if (j != i && (r & rec[j]) == r)
+				for (j = 0; j < result.size(); j++){
+					Rect overlap = rec[i] & result[j];
+					Rect out = rec[i] | result[j];
+					double now = overlap.width * overlap.height;
+					double next = r.width * r.height + result[j].width * result[j].height - now;
+					//cout << "--------------------------" << now << " " << next << endl;	
+					if (now * 10 > next * 3)
 						break;
-				if (j == rec.size())
+				}
+
+				if (j == result.size())
 					result.push_back(r);
 			}
 			
