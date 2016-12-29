@@ -10,17 +10,17 @@ endif
 ifneq ("$(wildcard dpm_nms.o)","")
 	PRE_DPM = echo compile dpm
 else
-	PRE_DPM = g++ -O3 -c HumanDetection/DPM/*.cpp $(LIB)
+	PRE_DPM = g++ -c HumanDetection/DPM/*.cpp $(LIB)
 endif
 
 ifneq ("$(wildcard Fusion.o)","")
 	PRE_CMT = echo compile CppMT
 else
-	PRE_CMT = g++ -O3 -c HumanDetection/CppMT/*.cpp HumanDetection/CppMT/fastcluster/*.cpp -I HumanDetection/CppMT $(LIB)
+	PRE_CMT = g++ -c HumanDetection/CppMT/*.cpp HumanDetection/CppMT/fastcluster/*.cpp -I HumanDetection/CppMT $(LIB)
 endif
 
 
-COMMAND = g++ -O3 -std=c++11 $(FILES) -o run $(LIB)
+COMMAND = g++ -std=c++11 $(FILES) -o run $(LIB)
 
 
 all:
