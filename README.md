@@ -9,5 +9,5 @@ Deformable Part-based Model + Consensus-based Tracking and Matching (CMT)
 mingw32-make
 run.exe
 ## Linux + Unix:
-cmake .
-run
+make .
+./run
