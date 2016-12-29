@@ -109,6 +109,7 @@ class CmtTracker : public Tracker{
 		vector<Rect> detect(const Mat& pre, const Mat& now, vector<Rect> boxes){
 			if (boxes.empty())
 				return boxes;
+
 			if (reInit) {
 				cmts.clear();
 				curBoxes.clear();

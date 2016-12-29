@@ -134,6 +134,7 @@ void proc() {
 
 	vector<Rect> found_filtered;
 	for(int step = 0; true; step++) {
+		bool skipFrame = false;
 		clock_t start = clock();
 		bool ok = cap.read(img);
 		if (!ok) {
@@ -150,10 +151,12 @@ void proc() {
 
 		if (step%conf.getStep() == 0)
 			found_filtered = detector->detect(img);
-		else {
+		else if ((step%conf.getStep()) % 2 == 1) {
 			if (step%conf.getStep() == 1)
 				tracker->startDetect();
 			found_filtered = tracker->detect(preImg, img, found_filtered);
+		} else {
+			skipFrame = true;
 		}
 		
 		
@@ -175,7 +178,7 @@ void proc() {
 		clock_t end = clock();
 		cout << getTime(start, end) << endl;		
 
-		preImg = img;		
+		if (!skipFrame) preImg = img;		
 	}
 	delete detector;	
 }
